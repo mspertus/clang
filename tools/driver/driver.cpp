@@ -319,7 +319,34 @@ static int ExecuteCC1Tool(ArrayRef<const char *> argv, StringRef Tool) {
   return 1;
 }
 
+struct alignas(64) A {
+  int a = 1;
+};
+struct alignas(64) B {
+  int b = 2;
+};
+struct alignas(64) C {
+  int c = 3;
+};
+struct alignas(64) D {
+  int d = 4;
+};
+
+
 int main(int argc_, const char **argv_) {
+  A a;
+  B b;
+  C c;
+  D d;
+  auto pi = llvm::PointerIntPair<llvm::PointerUnion<A *, B *>, 2>(&a);
+  auto pa = llvm::PointerUnion3<A *, B *, C *>(&a);
+  auto pb = llvm::PointerUnion3<A *, B *, C *>(&b);
+  auto pc = llvm::PointerUnion3<A *, B *, C *>(&c);
+  auto p4a = llvm::PointerUnion4<A *, B *, C *, D *>(&a);
+  auto p4b = llvm::PointerUnion4<A *, B *, C *, D *>(&b);
+  auto p4c = llvm::PointerUnion4<A *, B *, C *, D *>(&c);
+  auto p4d = llvm::PointerUnion4<A *, B *, C *, D *>(&d);
+
   llvm::InitLLVM X(argc_, argv_);
   SmallVector<const char *, 256> argv(argv_, argv_ + argc_);
 

@@ -25,24 +25,46 @@ For later versions of Visual Studio, no setup is required-->
     <!-- Dispatch to visualizers for the actual Type subclass -->
     <DisplayString Condition="TypeBits.TC==clang::Type::TypeClass::Builtin" IncludeView="poly">{*(clang::BuiltinType *)this}</DisplayString>
     <DisplayString Condition="TypeBits.TC==clang::Type::TypeClass::Pointer" IncludeView="poly">{*(clang::PointerType *)this}</DisplayString>
+    <DisplayString Condition="TypeBits.TC==clang::Type::TypeClass::Pointer" IncludeView="cpp">{*(clang::PointerType *)this,view(cpp)}</DisplayString>
     <DisplayString Condition="TypeBits.TC==clang::Type::TypeClass::LValueReference" IncludeView="poly">{*(clang::LValueReferenceType *)this}</DisplayString>
     <DisplayString Condition="TypeBits.TC==clang::Type::TypeClass::RValueReference" IncludeView="poly">{*(clang::RValueReferenceType *)this}</DisplayString>
     <DisplayString Condition="TypeBits.TC==clang::Type::TypeClass::Attributed" IncludeView="poly">{*(clang::AttributedType *)this}</DisplayString>
     <DisplayString Condition="TypeBits.TC==clang::Type::TypeClass::TemplateTypeParm" IncludeView="poly">{*(clang::TemplateTypeParmType *)this}</DisplayString>
+    <DisplayString Condition="TypeBits.TC==clang::Type::TypeClass::TemplateTypeParm" IncludeView="cpp">{*(clang::TemplateTypeParmType *)this,view(cpp)}</DisplayString>
     <DisplayString Condition="TypeBits.TC==clang::Type::TypeClass::SubstTemplateTypeParm" IncludeView="poly">{*(clang::SubstTemplateTypeParmType *)this}</DisplayString>
     <DisplayString Condition="TypeBits.TC==clang::Type::TypeClass::Record" IncludeView="poly">{*(clang::RecordType *)this}</DisplayString>
     <DisplayString Condition="TypeBits.TC==clang::Type::TypeClass::Record" IncludeView="cpp">{*(clang::RecordType *)this,view(cpp)}</DisplayString>
     <DisplayString Condition="TypeBits.TC==clang::Type::TypeClass::FunctionProto" IncludeView="poly">{*(clang::FunctionProtoType *)this}</DisplayString>
     <DisplayString Condition="TypeBits.TC==clang::Type::TypeClass::TemplateSpecialization" IncludeView="poly">{*(clang::TemplateSpecializationType *)this}</DisplayString>
+    <DisplayString Condition="TypeBits.TC==clang::Type::TypeClass::DeducedTemplateSpecialization" IncludeView="poly">{*(clang::DeducedTemplateSpecializationType *)this}</DisplayString>
     <DisplayString Condition="TypeBits.TC==clang::Type::TypeClass::InjectedClassName" IncludeView="poly">{*(clang::InjectedClassNameType *)this}</DisplayString>
     <DisplayString Condition="TypeBits.TC==clang::Type::TypeClass::PackExpansion" IncludeView="poly">{*(clang::PackExpansionType *)this}</DisplayString>
     <DisplayString Condition="TypeBits.TC==clang::LocInfoType::LocInfo" IncludeView="poly">{*(clang::LocInfoType *)this}</DisplayString>
     <DisplayString IncludeView="cpp">{*this,view(poly)}</DisplayString>
     <DisplayString IncludeView="poly">No visualizer yet for {(clang::Type::TypeClass)TypeBits.TC,en}Type</DisplayString> <!-- Not yet implemented Type subclass -->
+    <DisplayString IncludeView="Dependent" Condition="TypeBits.Dependent">Dependent{" ",sb}</DisplayString>
+    <DisplayString IncludeView="Dependent"></DisplayString>
+    <DisplayString IncludeView="InstantiationDependent" Condition="TypeBits.InstantiationDependent">InstantiationDependent{" ",sb}</DisplayString>
+    <DisplayString IncludeView="InstantiationDependent"></DisplayString>
+    <DisplayString IncludeView="VariablyModified" Condition="TypeBits.VariablyModified">VariablyModified{" ",sb}</DisplayString>
+    <DisplayString IncludeView="VariablyModified"></DisplayString>
+    <DisplayString IncludeView="ContainsUnexpandedParameterPack" Condition="TypeBits.ContainsUnexpandedParameterPack">ContainsUnexpandedParameterPack{" ",sb}</DisplayString>
+    <DisplayString IncludeView="ContainsUnexpandedParameterPack"></DisplayString>
+    <DisplayString IncludeView="Cache" Condition="TypeBits.CacheValid &amp;&amp; TypeBits.CachedLocalOrUnnamed">CachedLinkage: {(clang::Linkage)TypeBits.CachedLinkage,en} CachedLocalOrUnnamed</DisplayString>
+    <DisplayString IncludeView="Cache" Condition="TypeBits.CacheValid &amp;&amp; !TypeBits.CachedLocalOrUnnamed">CachedLinkage: {(clang::Linkage)TypeBits.CachedLinkage,en}{" ",sb}</DisplayString>
+    <DisplayString IncludeView="Cache"></DisplayString>
+    <DisplayString IncludeView="FromAST" Condition="TypeBits.FromAST">FromAST</DisplayString>
+    <DisplayString IncludeView="FromAST"></DisplayString>
+    <DisplayString IncludeView="flags" Condition="!TypeBits.Dependent &amp;&amp; !TypeBits.InstantiationDependent &amp;&amp; !TypeBits.VariablyModified  &amp;&amp; !TypeBits.ContainsUnexpandedParameterPack &amp;&amp; !TypeBits.CacheValid &amp;&amp; !TypeBits.FromAST">
+      No TypeBits set beyond TypeClass
+    </DisplayString>
+    <DisplayString IncludeView="flags">
+{*this, view(Dependent)}{*this, view(InstantiationDependent)}{*this, view(VariablyModified)}
+{*this, view(ContainsUnexpandedParameterPack)}{*this, view(Cache)}{*this, view(FromAST)}</DisplayString>
     <DisplayString>{*this,view(cmn)}  {{{*this,view(poly)}}}</DisplayString>
     <Expand>
       <Item Name="TypeClass" IncludeView="cmn">(clang::Type::TypeClass)TypeBits.TC</Item>
-      <Item Name="Flags" IncludeView="cmn">TypeBits</Item>
+      <Item Name="TypeBits" IncludeView="cmn">*this,view(flags)</Item>
       <Item Name="Canonical" IncludeView="cmn">CanonicalType</Item>
       <ExpandedItem ExcludeView="cmn" Condition="TypeBits.TC==clang::Type::TypeClass::Builtin">*(clang::BuiltinType *)this</ExpandedItem>
       <ExpandedItem ExcludeView="cmn" Condition="TypeBits.TC==clang::Type::TypeClass::Pointer">*(clang::PointerType *)this</ExpandedItem>
@@ -54,12 +76,14 @@ For later versions of Visual Studio, no setup is required-->
       <ExpandedItem ExcludeView="cmn" Condition="TypeBits.TC==clang::Type::TypeClass::Record">(clang::RecordType *)this</ExpandedItem>
       <ExpandedItem ExcludeView="cmn" Condition="TypeBits.TC==clang::Type::TypeClass::FunctionProto">(clang::FunctionProtoType *)this</ExpandedItem>
       <ExpandedItem ExcludeView="cmn" Condition="TypeBits.TC==clang::Type::TypeClass::TemplateSpecialization">(clang::TemplateSpecializationType *)this</ExpandedItem>
+      <ExpandedItem ExcludeView="cmn" Condition="TypeBits.TC==clang::Type::TypeClass::DeducedTemplateSpecialization">(clang::DeducedTemplateSpecializationType *)this</ExpandedItem>
       <ExpandedItem ExcludeView="cmn" Condition="TypeBits.TC==clang::Type::TypeClass::InjectedClassName">(clang::InjectedClassNameType *)this</ExpandedItem>
       <ExpandedItem ExcludeView="cmn" Condition="TypeBits.TC==clang::Type::TypeClass::PackExpansion">(clang::PackExpansionType *)this</ExpandedItem>
       <ExpandedItem ExcludeView="cmn" Condition="TypeBits.TC==clang::LocInfoType::LocInfo">(clang::LocInfoType *)this</ExpandedItem>
     </Expand>
   </Type>
   <Type Name="clang::PointerType">
+    <DisplayString IncludeView="cpp">{PointeeType, view(cpp)} *</DisplayString>
     <DisplayString>{PointeeType, view(poly)} *</DisplayString>
     <Expand>
       <Item Name="PointeeType">PointeeType</Item>
@@ -120,12 +144,27 @@ For later versions of Visual Studio, no setup is required-->
   <Type Name="clang::TemplateTypeParmDecl">
     <DisplayString IncludeView="TorC" Condition="Typename">typename</DisplayString>
     <DisplayString IncludeView="TorC" Condition="!Typename">class</DisplayString>
-    <DisplayString IncludeView="MaybeEllipses" Condition="((TemplateTypeParmType *)TypeForDecl)->CanTTPTInfo.ParameterPack">...</DisplayString>
-    <DisplayString IncludeView="MaybeEllipses" Condition="!((TemplateTypeParmType *)TypeForDecl)->CanTTPTInfo.ParameterPack"></DisplayString>
+    <DisplayString IncludeView="MaybeEllipses" Condition="TypeForDecl == nullptr">(not yet known if parameter pack) </DisplayString>
+    <DisplayString IncludeView="MaybeEllipses" Condition="((TemplateTypeParmType *)(((clang::ExtQualsTypeCommonBase *)(((uintptr_t)TypeForDecl->CanonicalType.Value.Value) &amp; ~(uintptr_t)((1 &lt;&lt; 4) - 1)))-&gt;BaseType))->CanTTPTInfo.ParameterPack">...</DisplayString>
+    <DisplayString IncludeView="MaybeEllipses" Condition="!((TemplateTypeParmType *)(((clang::ExtQualsTypeCommonBase *)(((uintptr_t)TypeForDecl->CanonicalType.Value.Value) &amp; ~(uintptr_t)((1 &lt;&lt; 4) - 1)))-&gt;BaseType))->CanTTPTInfo.ParameterPack"></DisplayString>
+    <DisplayString IncludeView="cpp">{*this,view(MaybeEllipses)}{Name,view(cpp)}</DisplayString>
     <DisplayString>{*this,view(TorC)} {*this,view(MaybeEllipses)}{Name,view(cpp)}</DisplayString> 
   </Type>
   <Type Name="clang::TemplateDecl">
-    <DisplayString>template{*TemplateParams} {*TemplatedDecl};</DisplayString>
+    <DisplayString>template{TemplateParams,view(deref)} {*TemplatedDecl};</DisplayString>
+  </Type>
+  <Type Name="clang::TypeAliasDecl">
+    <DisplayString>{Name,view(cpp)}</DisplayString>
+  </Type>
+  <Type Name="clang::TypeAliasTemplateDecl">
+    <DisplayString Optional="true">template{TemplateParams,view(deref)} using {*TemplatedDecl,view(cpp)} = {((TypeAliasDecl *)TemplatedDecl)->MaybeModedTInfo,view(deref)};</DisplayString>
+    <DisplayString>template{TemplateParams,view(deref)} using {*TemplatedDecl,view(cpp)};</DisplayString>
+  </Type>
+  <Type Name="clang::TemplateName">
+    <DisplayString>{Storage,view(deref)}</DisplayString>
+    <Expand>
+      <ExpandedItem>Storage</ExpandedItem>
+    </Expand>
   </Type>
   <Type Name="clang::NamedDecl" >
     <DisplayString IncludeView="cpp">{Name,view(cpp)}</DisplayString>
@@ -134,13 +173,13 @@ For later versions of Visual Studio, no setup is required-->
   <Type Name="clang::TagDecl">
     <DisplayString IncludeView="implicit" Condition="Implicit">implicit{" ",sb}</DisplayString>
     <DisplayString IncludeView="implicit"></DisplayString>
-    <DisplayString IncludeView="modifiers">{*this,view(implicit)}</DisplayString>
-    <DisplayString IncludeView="cpp">{*this,view(modifiers)}{Name,view(cpp)}</DisplayString>
-    <DisplayString Condition="TagDeclKind==clang::TagTypeKind::TTK_Struct">{*this,view(modifiers)}struct {Name,view(cpp)}</DisplayString>
-    <DisplayString Condition="TagDeclKind==clang::TagTypeKind::TTK_Interface">{*this,view(modifiers)}interface {Name,view(cpp)}</DisplayString>
-    <DisplayString Condition="TagDeclKind==clang::TagTypeKind::TTK_Union">{*this,view(modifiers)}union {Name,view(cpp)}</DisplayString>
-    <DisplayString Condition="TagDeclKind==clang::TagTypeKind::TTK_Class">{*this,view(modifiers)}class {Name,view(cpp)}</DisplayString>
-    <DisplayString Condition="TagDeclKind==clang::TagTypeKind::TTK_Enum">{*this,view(modifiers)}enum {Name,view(cpp)}</DisplayString>
+    <DisplayString IncludeView="modifiers">{*this,view(implicit)nd}</DisplayString>
+    <DisplayString IncludeView="cpp">{*this,view(modifiers)nd}{Name,view(cpp)}</DisplayString>
+    <DisplayString Condition="TagDeclBits.TagDeclKind==clang::TagTypeKind::TTK_Struct">{*this,view(modifiers)nd}struct {Name,view(cpp)}</DisplayString>
+    <DisplayString Condition="TagDeclBits.TagDeclKind==clang::TagTypeKind::TTK_Interface">{*this,view(modifiers)nd}interface {Name,view(cpp)}</DisplayString>
+    <DisplayString Condition="TagDeclBits.TagDeclKind==clang::TagTypeKind::TTK_Union">{*this,view(modifiers)nd}union {Name,view(cpp)}</DisplayString>
+    <DisplayString Condition="TagDeclBits.TagDeclKind==clang::TagTypeKind::TTK_Class">{*this,view(modifiers)nd}class {Name,view(cpp)}</DisplayString>
+    <DisplayString Condition="TagDeclBits.TagDeclKind==clang::TagTypeKind::TTK_Enum">{*this,view(modifiers)nd}enum {Name,view(cpp)}</DisplayString>
     <Expand>
       <ExpandedItem>(clang::DeclContext *)this</ExpandedItem>
     </Expand>
@@ -199,8 +238,11 @@ For later versions of Visual Studio, no setup is required-->
     </Expand>
   </Type>
   <Type Name="clang::TemplateTypeParmType">
-    <DisplayString IncludeView="cpp">{*TTPDecl,view(cpp)}</DisplayString>
-    <DisplayString>{*TTPDecl}</DisplayString>
+    <DisplayString IncludeView="cpp" Condition="CanonicalType.Value.Value != this">{*TTPDecl,view(cpp)}</DisplayString>
+    <DisplayString Condition="CanonicalType.Value.Value != this">Non-canonical: {*TTPDecl}</DisplayString>
+    <DisplayString>Canonical: {CanTTPTInfo}</DisplayString>
+    <Expand>
+    </Expand>
   </Type>
   <Type Name="clang::InjectedClassNameType">
     <DisplayString>{*Decl,view(cpp)}</DisplayString>
@@ -233,10 +275,11 @@ For later versions of Visual Studio, no setup is required-->
     <DisplayString IncludeView="fastQuals" Condition="(Value.Value &amp; 15)==6">{" ",sb}volatile restrict</DisplayString>
     <DisplayString IncludeView="fastQuals" Condition="(Value.Value &amp; 15)==7">{" ",sb}const volatile restrict</DisplayString>
     <DisplayString IncludeView="fastQuals">Cannot visualize non-fast qualifiers</DisplayString>
+    <DisplayString Condition="(uintptr_t)Value.Value == 0">Null</DisplayString>
     <DisplayString>{*((clang::ExtQualsTypeCommonBase *)(((uintptr_t)Value.Value) &amp; ~(uintptr_t)((1 &lt;&lt; 4) - 1)))-&gt;BaseType}{*this,view(fastQuals)}</DisplayString>
     <Expand>
       <Item Name="Fast Quals">*this,view(fastQuals)</Item>
-      <Item Name="BaseType">*((clang::ExtQualsTypeCommonBase *)(((uintptr_t)Value.Value) &amp; ~(uintptr_t)((1 &lt;&lt; 4) - 1)))-&gt;BaseType</Item>
+      <ExpandedItem>*((clang::ExtQualsTypeCommonBase *)(((uintptr_t)Value.Value) &amp; ~(uintptr_t)((1 &lt;&lt; 4) - 1)))-&gt;BaseType</ExpandedItem>
     </Expand>
   </Type>
   <Type Name="clang::LocInfoType">
@@ -247,6 +290,7 @@ For later versions of Visual Studio, no setup is required-->
     </Expand>
   </Type>
   <Type Name="clang::TypeSourceInfo">
+    <DisplayString IncludeView="cpp">{Ty,view(cpp)}</DisplayString>
     <DisplayString>{Ty}</DisplayString>
   </Type>
   <Type Name="clang::TemplateArgumentLoc">
@@ -270,7 +314,7 @@ For later versions of Visual Studio, no setup is required-->
     <DisplayString IncludeView="arg1cpp">, {Args.Args[1],view(cpp)}{*this,view(arg2cpp)}</DisplayString>
     <DisplayString IncludeView="arg2cpp" Condition="Args.NumArgs==2"></DisplayString>
     <DisplayString IncludeView="arg2cpp">, {Args.Args[2],view(cpp)}, ...</DisplayString>
-    <DisplayString IncludeView="cpp" Condition="Integer.Kind == clang::TemplateArgument::ArgKind::Pack">{*this,view(arg0cpp)}</DisplayString>
+    <DisplayString IncludeView="cpp" Condition="Integer.Kind == clang::TemplateArgument::ArgKind::Pack">x{*this,view(arg0cpp)}</DisplayString>
     <DisplayString Condition="Integer.Kind == clang::TemplateArgument::ArgKind::Pack">{*this,view(arg0)}</DisplayString>
     <DisplayString>{(clang::TemplateArgument::ArgKind)TypeOrValue.Kind,en}</DisplayString>
     <Expand>
@@ -362,13 +406,13 @@ For later versions of Visual Studio, no setup is required-->
       <Item Name="Kind">(clang::BuiltinType::Kind)BuiltinTypeBits.Kind</Item>
     </Expand>
   </Type>
-
+  
   <Type Name="clang::TemplateSpecializationType">
-    <DisplayString IncludeView="arg0" Condition="NumArgs==0"></DisplayString>
+    <DisplayString IncludeView="arg0" Condition="TemplateSpecializationTypeBits.NumArgs==0"></DisplayString>
     <DisplayString IncludeView="arg0">{((clang::TemplateArgument *)(this+1))[0],view(cpp)}{*this,view(arg1)}</DisplayString>
-    <DisplayString IncludeView="arg1" Condition="NumArgs==1"></DisplayString>
+    <DisplayString IncludeView="arg1" Condition="TemplateSpecializationTypeBits.NumArgs==1"></DisplayString>
     <DisplayString IncludeView="arg1">, {((clang::TemplateArgument *)(this+1))[1],view(cpp)}{*this,view(arg2)}</DisplayString>
-    <DisplayString IncludeView="arg2" Condition="NumArgs==2"></DisplayString>
+    <DisplayString IncludeView="arg2" Condition="TemplateSpecializationTypeBits.NumArgs==2"></DisplayString>
     <DisplayString IncludeView="arg2">, {((clang::TemplateArgument *)(this+1))[2],view(cpp)}{*this,view(arg3)}</DisplayString>
     <DisplayString Condition="(Template.Storage.Val.Val.Value &amp; 3) == 0">
       {*((clang::TemplateDecl *)((Template.Storage.Val.Val.Value &gt;&gt; 2) &lt;&lt; 2))->TemplatedDecl,view(cpp)}&lt;{*this,view(arg0)}&gt;
@@ -376,9 +420,32 @@ For later versions of Visual Studio, no setup is required-->
     <Expand>
       <Item Name="Template">Template.Storage</Item>
       <ArrayItems>
-        <Size>NumArgs</Size>
+        <Size>TemplateSpecializationTypeBits.NumArgs</Size>
+        <Size>TemplateSpecializationTypeBits.NumArgs</Size>
         <ValuePointer>(clang::TemplateArgument *)(this+1)</ValuePointer>
       </ArrayItems>
+    </Expand>
+  </Type>
+  <Type Name="clang::DeducedType">
+    <Expand>
+      <Item Name="isDeduced">(CanonicalType.Value.Value != this) || TypeBits.Dependent</Item>
+      <ExpandedItem>*(clang::Type *)this,view(cmn)</ExpandedItem>
+    </Expand>
+  </Type>
+  <Type Name="clang::DeducedTemplateSpecializationType">
+    <DisplayString Condition="(CanonicalType.Value.Value != this) || TypeBits.Dependent">{CanonicalType,view(cpp)}</DisplayString>
+    <DisplayString>{Template}</DisplayString>
+    <Expand>
+      <Item Name="Template">Template</Item>
+      <Item Name="Deduced As" Condition="(CanonicalType.Value.Value != this) || TypeBits.Dependent">CanonicalType,view(cpp)</Item>
+      <ExpandedItem>*(clang::DeducedType *)this</ExpandedItem>
+    </Expand>
+  </Type>
+  <Type Name="clang::ClassTemplateSpecializationDecl">
+    <DisplayString>{*(CXXRecordDecl *)this,nd}{*TemplateArgs}</DisplayString>
+    <Expand>
+      <ExpandedItem>(CXXRecordDecl *)this,nd</ExpandedItem>
+      <Item Name="TemplateArgs">TemplateArgs</Item>
     </Expand>
   </Type>
   <Type Name="clang::IdentifierInfo">
@@ -489,19 +556,6 @@ For later versions of Visual Studio, no setup is required-->
           </ArrayItems>
         </Expand>
       </Synthetic>
-      <ExpandedItem>*(clang::Type *)this, view(cmn)</ExpandedItem>
-    </Expand>
-  </Type>
-  <Type Name="clang::OpaquePtr&lt;clang::QualType&gt;">
-    <DisplayString>{*(clang::QualType *)this}</DisplayString>
-    <Expand>
-      <Item Name="Ptr">*(clang::QualType *)this</Item>
-    </Expand>
-  </Type>
-  <Type Name="clang::UnionOpaquePtr&lt;clang::QualType&gt;">
-    <DisplayString>{*(clang::QualType *)this}</DisplayString>
-    <Expand>
-      <Item Name="Ptr">*(clang::QualType *)this</Item>
     </Expand>
   </Type>
   <Type Name="clang::OpaquePtr&lt;*&gt;">
@@ -568,30 +622,18 @@ For later versions of Visual Studio, no setup is required-->
     <DisplayString Condition="ResultKind == clang::LookupResult::Ambiguous">{Ambiguity,en}: {Decls}</DisplayString>
     <DisplayString>{ResultKind,en}: {Decls}</DisplayString>
   </Type>
-  <Type Name="clang::ActionResult&lt;*&gt;" IncludeView="packedValidity">
-    <DisplayString Condition="PtrWithInvalid&amp;1">Invalid</DisplayString>
-    <DisplayString Condition="!(PtrWithInvalid&amp;1)">Valid</DisplayString>
-   </Type>
-  <Type Name="clang::ActionResult&lt;*&gt;" IncludeView="unpackedValidity">
+  <Type Name="clang::ActionResult&lt;*, 0&gt;">
     <DisplayString Condition="Invalid">Invalid</DisplayString>
-    <DisplayString Condition="!Invalid">Valid</DisplayString>
+    <DisplayString Condition="!*(void **)&amp;Val">Unset</DisplayString>
+    <DisplayString>{Val}</DisplayString>
   </Type>
-  <Type Name="clang::ActionResult&lt;*&gt;" IncludeView="packed">
-    <DisplayString>{*this,view(packedValidity)}: {($T1 *)(PtrWithInvalid&amp;~1)}</DisplayString>
+  <Type Name="clang::ActionResult&lt;*, 1&gt;">
+    <DisplayString Condition="PtrWithInvalid&amp;1">Invalid</DisplayString>
+    <DisplayString Condition="!PtrWithInvalid">Unset</DisplayString>
+    <DisplayString>{($T1)(PtrWithInvalid&amp;~1)}</DisplayString>
     <Expand>
       <Item Name="Invalid">(bool)(PtrWithInvalid&amp;1)</Item>
-      <Item Name="Val">($T1 *)(PtrWithInvalid&amp;~1)</Item>
-    </Expand>
-  </Type>
-  <Type Name="clang::ActionResult&lt;*&gt;" IncludeView="unpacked">
-    <DisplayString>{*this,view(unpackedValidity)}: {Val}</DisplayString>
-  </Type>
-  <Type Name="clang::ActionResult&lt;*&gt;">
-    <DisplayString Condition="$T2">{*this,view(packed)}</DisplayString>
-    <DisplayString Condition="!$T2">{*this,view(unpacked)}</DisplayString>
-    <Expand>
-      <ExpandedItem Condition="$T2">*this,view(packed)</ExpandedItem>
-      <ExpandedItem Condition="!$T2">*this,view(unpacked)</ExpandedItem>
+      <Item Name="Val">($T1)(PtrWithInvalid&amp;~1)</Item>
     </Expand>
   </Type>
 </AutoVisualizer>
