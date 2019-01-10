@@ -448,6 +448,32 @@ For later versions of Visual Studio, no setup is required-->
       <Item Name="TemplateArgs">TemplateArgs</Item>
     </Expand>
   </Type>
+  <Type Name="clang::UnqualifiedId">
+    <DisplayString Condition="Kind == UnqualifiedIdKind::IK_Identifier" IncludeView="poly">{Identifier,na}</DisplayString>
+    <DisplayString Condition="Kind == UnqualifiedIdKind::IK_OperatorFunctionId" IncludeView="poly">{OperatorFunctionId}</DisplayString>
+    <DisplayString Condition="Kind == UnqualifiedIdKind::IK_ConversionFunctionId" IncludeView="poly">{ConversionFunctionId}</DisplayString>
+    <DisplayString Condition="Kind == UnqualifiedIdKind::IK_LiteralOperatorId" IncludeView="poly">{Identifier,na}</DisplayString>
+    <DisplayString Condition="Kind == UnqualifiedIdKind::IK_ConstructorName" IncludeView="poly">{ConstructorName}</DisplayString>
+    <DisplayString Condition="Kind == UnqualifiedIdKind::IK_ConstructorTemplateId" IncludeView="poly">{TemplateId,na}</DisplayString>
+    <DisplayString Condition="Kind == UnqualifiedIdKind::IK_DestructorName" IncludeView="poly">{DestructorName}</DisplayString>
+    <DisplayString Condition="Kind == UnqualifiedIdKind::IK_TemplateId" IncludeView="poly">{TemplateId,na}</DisplayString>
+    <DisplayString Condition="Kind == UnqualifiedIdKind::IK_ImplicitSelfParam" IncludeView="poly">{Identifier,na}</DisplayString>
+    <DisplayString Condition="Kind == UnqualifiedIdKind::IK_DeductionGuideName" IncludeView="poly">{TemplateName}</DisplayString>
+    <DisplayString>[{Kind,en}] {this,view(poly)na</DisplayString>
+    <Expand>
+      <Item Name="Kind">Kind</Item>
+      <Item Name="Identifier" Condition="Kind == UnqualifiedIdKind::IK_Identifier">Identifier</Item>
+      <Item Name="OperatorFunctionId" Condition="Kind == UnqualifiedIdKind::IK_OperatorFunctionId">OperatorFunctionId</Item>
+      <Item Name="ConversionFunctionId" Condition="Kind == UnqualifiedIdKind::IK_ConversionFunctionId">ConversionFunctionId</Item>
+      <Item Name="Identifier" Condition="Kind == UnqualifiedIdKind::IK_LiteralOperatorId">Identifier</Item>
+      <Item Name="ConstructorName" Condition="Kind == UnqualifiedIdKind::IK_ConstructorName">ConstructorName</Item>
+      <Item Name="TemplateId" Condition="Kind == UnqualifiedIdKind::IK_ConstructorTemplateId">TemplateId</Item>
+      <Item Name="DestructorName" Condition="Kind == UnqualifiedIdKind::IK_DestructorName">DestructorName</Item>
+      <Item Name="TemplateId" Condition="Kind == UnqualifiedIdKind::IK_TemplateId">TemplateId</Item>
+      <Item Name="Identifier" Condition="Kind == UnqualifiedIdKind::IK_ImplicitSelfParam">Identifier</Item>
+      <Item Name="TemplateName" Condition="Kind == UnqualifiedIdKind::IK_DeductionGuideName">TemplateName</Item>
+    </Expand>
+  </Type>
   <Type Name="clang::IdentifierInfo">
     <DisplayString Condition="Entry != 0">{((llvm::StringMapEntry&lt;clang::IdentifierInfo *&gt;*)Entry)+1,sb}</DisplayString>
     <Expand>
@@ -518,6 +544,9 @@ For later versions of Visual Studio, no setup is required-->
       <Item Name="ThreadStorageClass">(clang::ThreadStorageClassSpecifier)TSCSpec</Item>
       <Item Name="InitStyle">(clang::VarDecl::InitializationStyle)InitStyle</Item>
     </Expand>
+  </Type>
+  <Type Name="clang::Declarator">
+    <DisplayString>{DS} {Name,na}</DisplayString>
   </Type>
   <Type Name="clang::DeclaratorDecl">
     <DisplayString>{DeclType,view(cpp)} {Name,view(cpp)}</DisplayString>
@@ -595,6 +624,7 @@ For later versions of Visual Studio, no setup is required-->
     <DisplayString IncludeView="parm5">, /* Expand for more params */</DisplayString>
     <DisplayString>&lt;{*this,view(parm0)}&gt;</DisplayString>
     <Expand>
+      <Item Name="NumParams">NumParams</Item>
       <ArrayItems>
         <Size>NumParams</Size>
       <ValuePointer>(NamedDecl **)(this+1)</ValuePointer>
