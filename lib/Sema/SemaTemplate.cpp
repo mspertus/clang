@@ -1959,8 +1959,11 @@ void Sema::DeclareImplicitDeductionGuides(TemplateDecl *Template,
     auto ClassTemplateSpecializationType = cast<TemplateSpecializationType>(TAD->getTypeSourceInfo()->getType());
     auto ClassTemplateName = ClassTemplateSpecializationType->getTemplateName();
     auto ClassTemplateDecl = ClassTemplateName.getAsTemplateDecl();
-//	LookupResult ClassGuides(*this, DeclarationNameInfo(Context.DeclarationNames.getCXXDeductionGuideName(ClassTemplateDecl),
-//		TAD->getTypeSourceInfo().)
+    DeclarationNameInfo NameInfo(
+        Context.DeclarationNames.getCXXDeductionGuideName(ClassTemplateDecl),
+        TAD->getTypeSourceInfo()->getTypeLoc().getEndLoc());
+    LookupResult ClassGuides(*this, NameInfo, LookupOrdinaryName);
+    LookupQualifiedName(ClassGuides, Alias->getDeclContext());
     return;
   }
   ConvertConstructorToDeductionGuideTransform Transform(
