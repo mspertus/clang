@@ -459,7 +459,7 @@ For later versions of Visual Studio, no setup is required-->
     <DisplayString Condition="Kind == UnqualifiedIdKind::IK_TemplateId" IncludeView="poly">{TemplateId,na}</DisplayString>
     <DisplayString Condition="Kind == UnqualifiedIdKind::IK_ImplicitSelfParam" IncludeView="poly">{Identifier,na}</DisplayString>
     <DisplayString Condition="Kind == UnqualifiedIdKind::IK_DeductionGuideName" IncludeView="poly">{TemplateName}</DisplayString>
-    <DisplayString>[{Kind,en}] {this,view(poly)na</DisplayString>
+    <DisplayString>[{Kind,en}] {this,view(poly)na}</DisplayString>
     <Expand>
       <Item Name="Kind">Kind</Item>
       <Item Name="Identifier" Condition="Kind == UnqualifiedIdKind::IK_Identifier">Identifier</Item>
@@ -598,15 +598,15 @@ For later versions of Visual Studio, no setup is required-->
     </Expand>
   </Type>
   <Type Name="clang::OpaquePtr&lt;*&gt;">
-    <DisplayString>{($T1 *)Ptr}</DisplayString>
+    <DisplayString>{*($T1*)&amp;Ptr}</DisplayString>
     <Expand>
-      <ExpandedItem>($T1 *)Ptr</ExpandedItem>
+      <ExpandedItem>*($T1*)&amp;Ptr</ExpandedItem>
     </Expand>
   </Type>
   <Type Name="clang::UnionOpaquePtr&lt;*&gt;">
-    <DisplayString>{($T1 *)Ptr}</DisplayString>
+    <DisplayString>{*($T1*)&amp;Ptr}</DisplayString>
     <Expand>
-      <ExpandedItem>($T1 *)Ptr</ExpandedItem>
+      <ExpandedItem>*($T1*)&amp;PtrPtr</ExpandedItem>
     </Expand>
   </Type>
   <Type Name="clang::TemplateParameterList">
