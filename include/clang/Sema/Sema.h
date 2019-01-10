@@ -7091,6 +7091,16 @@ public:
       TypeSourceInfo *TInfo, const InitializedEntity &Entity,
       const InitializationKind &Kind, MultiExprArg Init);
 
+  QualType DeduceClassTemplateSpecializationFromInitializer(
+	  ClassTemplateDecl *Template, TemplateName TemplateName,
+      TypeSourceInfo *TInfo, const InitializedEntity &Entity,
+      const InitializationKind &Kind, MultiExprArg Init);
+
+  QualType DeduceTypeAliasTemplateSpecializationFromInitializer(
+	  TypeAliasTemplateDecl *Template, TemplateName TemplateName,
+      TypeSourceInfo *TInfo, const InitializedEntity &Entity,
+      const InitializationKind &Kind, MultiExprArg Init);
+
   QualType deduceVarTypeFromInitializer(VarDecl *VDecl, DeclarationName Name,
                                         QualType Type, TypeSourceInfo *TSI,
                                         SourceRange Range, bool DirectInit,

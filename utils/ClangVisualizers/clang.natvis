@@ -467,9 +467,10 @@ For later versions of Visual Studio, no setup is required-->
     <DisplayString Condition="(Ptr &amp; PtrMask) == StoredCXXConversionFunctionName">C++ Conversion function {{*(clang::detail::CXXSpecialNameExtra *)(Ptr &amp; ~PtrMask)}}</DisplayString>
     <DisplayString Condition="(Ptr &amp; PtrMask) == StoredCXXOperatorName">C++ Operator {{*(clang::detail::CXXOperatorIdName *)(Ptr &amp; ~PtrMask)}}</DisplayString>    
     <DisplayString Condition="(Ptr &amp; PtrMask) == StoredDeclarationNameExtra"
-                   IncludeView="cpp">{*(clang::detail::DeclarationNameExtra *)(Ptr &amp; ~PtrMask),view(cpp)}</DisplayString>
-    <DisplayString Condition="(Ptr &amp; PtrMask) == StoredDeclarationNameExtra">{{Extra ({*(clang::detail::DeclarationNameExtra *)(Ptr &amp; ~PtrMask)})}}</DisplayString>
+                   IncludeView="cpp">{(clang::detail::DeclarationNameExtra *)(Ptr &amp; ~PtrMask),view(cpp)na}</DisplayString>
+    <DisplayString Condition="(Ptr &amp; PtrMask) == StoredDeclarationNameExtra">{(clang::detail::DeclarationNameExtra *)(Ptr &amp; ~PtrMask),na}</DisplayString>
     <Expand>
+      <Item Name="StoredNameKind">(StoredNameKind)(Ptr &amp; PtrMask)</Item>
       <Item Condition="(Ptr &amp; PtrMask) == StoredIdentifier" Name="[Identifier]">*(clang::IdentifierInfo *)(Ptr &amp; ~PtrMask)</Item>
       <Item Condition="(Ptr &amp; PtrMask) == StoredObjCZeroArgSelector" Name="[ObjC Zero Arg Selector]">*(clang::IdentifierInfo *)(Ptr &amp; ~PtrMask)</Item>
       <Item Condition="(Ptr &amp; PtrMask) == StoredObjCOneArgSelector" Name="[ObjC One Arg Selector]">*(clang::IdentifierInfo *)(Ptr &amp; ~PtrMask)</Item>
@@ -477,14 +478,23 @@ For later versions of Visual Studio, no setup is required-->
       <Item Condition="(Ptr &amp; PtrMask) == StoredCXXDestructorName" Name="[C++ Destructor]">*(clang::detail::CXXSpecialNameExtra *)(Ptr &amp; ~PtrMask)</Item>
       <Item Condition="(Ptr &amp; PtrMask) == StoredCXXConversionFunctionName" Name="[C++ Conversion function]">*(clang::detail::CXXSpecialNameExtra *)(Ptr &amp; ~PtrMask)</Item>
       <Item Condition="(Ptr &amp; PtrMask) == StoredCXXOperatorName" Name="[C++ Operator]">*(clang::detail::CXXOperatorIdName *)(Ptr &amp; ~PtrMask)</Item>      
-      <Item Condition="(Ptr &amp; PtrMask) == StoredDeclarationNameExtra" Name="[Extra]">(clang::detail::DeclarationNameExtra *)(Ptr &amp; ~PtrMask)</Item>
+      <ExpandedItem Condition="(Ptr &amp; PtrMask) == StoredDeclarationNameExtra">(clang::detail::DeclarationNameExtra *)(Ptr &amp; ~PtrMask)</ExpandedItem>
     </Expand>
   </Type>
   <Type Name="clang::detail::DeclarationNameExtra">
-    <DisplayString Condition="ExtraKindOrNumArgs == CXXDeductionGuideName">C++ Deduction guide</DisplayString>
+    <DisplayString Condition="ExtraKindOrNumArgs == CXXDeductionGuideName">{(clang::detail::CXXDeductionGuideNameExtra *)this,na}</DisplayString>
     <DisplayString Condition="ExtraKindOrNumArgs == CXXLiteralOperatorName">C++ Literal operator</DisplayString>
     <DisplayString Condition="ExtraKindOrNumArgs == CXXUsingDirective">C++ Using directive</DisplayString>  
     <DisplayString>{(clang::detail::DeclarationNameExtra::ExtraKind)ExtraKindOrNumArgs,en}{"  ",sb}{*this,view(cpp)}</DisplayString>
+    <Expand>
+      <ExpandedItem Condition="ExtraKindOrNumArgs == CXXDeductionGuideName">(CXXDeductionGuideNameExtra *)this</ExpandedItem>
+    </Expand>
+  </Type>
+  <Type Name="clang::detail::CXXDeductionGuideNameExtra">
+    <DisplayString>Deduction Guide for {Template->TemplatedDecl,na}</DisplayString>
+    <Expand>
+      <Item Name="Template">Template</Item>
+    </Expand>
   </Type>
   <Type Name="clang::Token">
     <DisplayString Condition="Kind != clang::tok::identifier">{(clang::tok::TokenKind)Kind,en}</DisplayString>
