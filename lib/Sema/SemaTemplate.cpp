@@ -1963,7 +1963,12 @@ void Sema::DeclareImplicitDeductionGuides(TemplateDecl *Template,
         Context.DeclarationNames.getCXXDeductionGuideName(ClassTemplateDecl),
         TAD->getTypeSourceInfo()->getTypeLoc().getEndLoc());
     LookupResult ClassGuides(*this, NameInfo, LookupOrdinaryName);
-    LookupQualifiedName(ClassGuides, Alias->getDeclContext());
+    LookupQualifiedName(ClassGuides, DC);
+	// Modeled off buildSimpleDeductionGuide
+    SourceLocation Loc = Template->getLocation();
+    for (auto DAP : ClassGuides) {
+      decltype(DAP) *dd = nullptr;
+	}
     return;
   }
   ConvertConstructorToDeductionGuideTransform Transform(
