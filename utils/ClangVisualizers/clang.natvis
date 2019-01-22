@@ -222,7 +222,12 @@ For later versions of Visual Studio, no setup is required-->
     <DisplayString IncludeView="parm4">, {*((clang::QualType *)(this+1)+4),view(cpp)}{*this,view(parm5)}</DisplayString>
     <DisplayString IncludeView="parm5" Condition="FunctionTypeBits.NumParams==5"></DisplayString>
     <DisplayString IncludeView="parm5">, /* expand for more params */</DisplayString>
-    <DisplayString>{*this,view(retType)}({*this,view(parm0)})</DisplayString>
+    <DisplayString IncludeView="parms">({*this,view(parm0)})</DisplayString>
+    <DisplayString Condition="FunctionTypeBits.HasTrailingReturn" IncludeView="beforeName">auto</DisplayString>
+    <DisplayString IncludeView="beforeName">{*this,view(retType)}{" ",sb}</DisplayString>
+    <DisplayString Condition="FunctionTypeBits.HasTrailingReturn" IncludeView="afterName">{*this,view(parms)} -&gt; {*this,view(retType)}</DisplayString>
+    <DisplayString IncludeView="afterName">{*this,view(parms)}</DisplayString>
+    <DisplayString>{*this,view(beforeName)}{*this,view(afterName)}</DisplayString>
     <Expand>
       <Item Name="ReturnType">ResultType</Item>
       <Synthetic Name="Parameter Types">
@@ -508,6 +513,7 @@ For later versions of Visual Studio, no setup is required-->
     </Expand>
   </Type>
   <Type Name="clang::detail::DeclarationNameExtra">
+    <DisplayString IncludeView="cpp" Condition="ExtraKindOrNumArgs == CXXDeductionGuideName">{(clang::detail::CXXDeductionGuideNameExtra *)this,view(cpp)na}</DisplayString>
     <DisplayString Condition="ExtraKindOrNumArgs == CXXDeductionGuideName">{(clang::detail::CXXDeductionGuideNameExtra *)this,na}</DisplayString>
     <DisplayString Condition="ExtraKindOrNumArgs == CXXLiteralOperatorName">C++ Literal operator</DisplayString>
     <DisplayString Condition="ExtraKindOrNumArgs == CXXUsingDirective">C++ Using directive</DisplayString>  
@@ -517,6 +523,7 @@ For later versions of Visual Studio, no setup is required-->
     </Expand>
   </Type>
   <Type Name="clang::detail::CXXDeductionGuideNameExtra">
+    <DisplayString IncludeView="cpp">{Template->TemplatedDecl,view(cpp)na}</DisplayString>
     <DisplayString>Deduction Guide for {Template->TemplatedDecl,na}</DisplayString>
     <Expand>
       <Item Name="Template">Template</Item>
@@ -573,20 +580,7 @@ For later versions of Visual Studio, no setup is required-->
     </Expand>
   </Type>
   <Type Name="clang::FunctionDecl">
-    <DisplayString IncludeView="retType">{*(clang::FunctionProtoType *)((clang::ExtQualsTypeCommonBase *)(((uintptr_t)DeclType.Value.Value) &amp; ~15))-&gt;BaseType,view(retType)}</DisplayString>
-    <DisplayString IncludeView="parm0" Condition="0 == ((clang::FunctionProtoType *)((clang::ExtQualsTypeCommonBase *)(((uintptr_t)DeclType.Value.Value) &amp; ~15))-&gt;BaseType)-&gt;FunctionTypeBits.NumParams"></DisplayString>
-    <DisplayString IncludeView="parm0">{*ParamInfo[0]}{*this,view(parm1)nd}</DisplayString>
-    <DisplayString IncludeView="parm1" Condition="1 == ((clang::FunctionProtoType *)((clang::ExtQualsTypeCommonBase *)(((uintptr_t)DeclType.Value.Value) &amp; ~15))-&gt;BaseType)-&gt;FunctionTypeBits.NumParams"></DisplayString>
-    <DisplayString IncludeView="parm1">, {*ParamInfo[1]}{*this,view(parm2)nd}</DisplayString>
-    <DisplayString IncludeView="parm2" Condition="2 == ((clang::FunctionProtoType *)((clang::ExtQualsTypeCommonBase *)(((uintptr_t)DeclType.Value.Value) &amp; ~15))-&gt;BaseType)-&gt;FunctionTypeBits.NumParams"></DisplayString>
-    <DisplayString IncludeView="parm2">, {*ParamInfo[2]}{*this,view(parm3)nd}</DisplayString>
-    <DisplayString IncludeView="parm3" Condition="3 == ((clang::FunctionProtoType *)((clang::ExtQualsTypeCommonBase *)(((uintptr_t)DeclType.Value.Value) &amp; ~15))-&gt;BaseType)-&gt;FunctionTypeBits.NumParams"></DisplayString>
-    <DisplayString IncludeView="parm3">, {*ParamInfo[3]}{*this,view(parm4)nd}</DisplayString>
-    <DisplayString IncludeView="parm4" Condition="4 == ((clang::FunctionProtoType *)((clang::ExtQualsTypeCommonBase *)(((uintptr_t)DeclType.Value.Value) &amp; ~15))-&gt;BaseType)-&gt;FunctionTypeBits.NumParams"></DisplayString>
-    <DisplayString IncludeView="parm4">, {*ParamInfo[4]}{*this,view(parm5)nd}</DisplayString>
-    <DisplayString IncludeView="parm5" Condition="5 == ((clang::FunctionProtoType *)((clang::ExtQualsTypeCommonBase *)(((uintptr_t)DeclType.Value.Value) &amp; ~15))-&gt;BaseType)-&gt;FunctionTypeBits.NumParams"></DisplayString>
-    <DisplayString IncludeView="parm5">, /* expand for more params */</DisplayString>
-    <DisplayString>{*this,view(retType)nd} {Name,view(cpp)nd}({*this,view(parm0)nd})</DisplayString>
+    <DisplayString>{*(clang::FunctionProtoType *)((clang::ExtQualsTypeCommonBase *)(((uintptr_t)DeclType.Value.Value) &amp; ~15))-&gt;BaseType,view(beforeName)} {Name,view(cpp)nd}{*(clang::FunctionProtoType *)((clang::ExtQualsTypeCommonBase *)(((uintptr_t)DeclType.Value.Value) &amp; ~15))-&gt;BaseType,view(afterName)}</DisplayString>
     <Expand>
       <Item Name="ReturnType">*this,view(retType)nd</Item>
       <Synthetic Name="Parameter Types">
@@ -599,6 +593,9 @@ For later versions of Visual Studio, no setup is required-->
         </Expand>
       </Synthetic>
     </Expand>
+  </Type>
+  <Type Name="clang::CXXDeductionGuideDecl">
+    <DisplayString>{Name,view(cpp)nd}{*(clang::FunctionProtoType *)((clang::ExtQualsTypeCommonBase *)(((uintptr_t)DeclType.Value.Value) &amp; ~15))-&gt;BaseType,view(afterName)}</DisplayString>
   </Type>
   <Type Name="clang::OpaquePtr&lt;*&gt;">
     <DisplayString>{*($T1*)&amp;Ptr}</DisplayString>
@@ -644,12 +641,12 @@ For later versions of Visual Studio, no setup is required-->
     <DisplayString>Expression of class {(clang::Stmt::StmtClass)StmtBits.sClass,en} and type {TR,view(cpp)}</DisplayString>
   </Type>
   <Type Name="clang::DeclAccessPair">
-    <DisplayString IncludeView="access" Condition="(Ptr&amp;Mask) == clang::AS_public">public</DisplayString>
-    <DisplayString IncludeView="access" Condition="(Ptr&amp;Mask) == clang::AS_protected">protected</DisplayString>
-    <DisplayString IncludeView="access" Condition="(Ptr&amp;Mask) == clang::AS_private">private</DisplayString>
+    <DisplayString IncludeView="access" Condition="(Ptr&amp;Mask) == clang::AS_public">public </DisplayString>
+    <DisplayString IncludeView="access" Condition="(Ptr&amp;Mask) == clang::AS_protected">protected </DisplayString>
+    <DisplayString IncludeView="access" Condition="(Ptr&amp;Mask) == clang::AS_private">private </DisplayString>
     <DisplayString IncludeView="access" Condition="(Ptr&amp;Mask) == clang::AS_none"></DisplayString>
     <DisplayString IncludeView="decl">{*(clang::NamedDecl *)(Ptr&amp;~Mask)}</DisplayString>
-    <DisplayString>{*this,view(access)} {*this,view(decl)}</DisplayString>
+    <DisplayString>{*this,view(access)}{*this,view(decl)}</DisplayString>
     <Expand>
       <Item Name="access">(clang::AccessSpecifier)(Ptr&amp;Mask),en</Item>
       <Item Name="decl">*(clang::NamedDecl *)(Ptr&amp;~Mask)</Item>
