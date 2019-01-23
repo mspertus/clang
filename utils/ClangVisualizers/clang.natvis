@@ -38,6 +38,7 @@ For later versions of Visual Studio, no setup is required-->
     <DisplayString Condition="TypeBits.TC==clang::Type::TypeClass::TemplateSpecialization" IncludeView="poly">{*(clang::TemplateSpecializationType *)this}</DisplayString>
     <DisplayString Condition="TypeBits.TC==clang::Type::TypeClass::DeducedTemplateSpecialization" IncludeView="poly">{*(clang::DeducedTemplateSpecializationType *)this}</DisplayString>
     <DisplayString Condition="TypeBits.TC==clang::Type::TypeClass::InjectedClassName" IncludeView="poly">{*(clang::InjectedClassNameType *)this}</DisplayString>
+    <DisplayString Condition="TypeBits.TC==clang::Type::TypeClass::InjectedClassName" IncludeView="cpp">{*(clang::InjectedClassNameType *)this,view(cpp)}</DisplayString>
     <DisplayString Condition="TypeBits.TC==clang::Type::TypeClass::PackExpansion" IncludeView="poly">{*(clang::PackExpansionType *)this}</DisplayString>
     <DisplayString Condition="TypeBits.TC==clang::LocInfoType::LocInfo" IncludeView="poly">{*(clang::LocInfoType *)this}</DisplayString>
     <DisplayString IncludeView="cpp">{*this,view(poly)}</DisplayString>
@@ -250,6 +251,7 @@ For later versions of Visual Studio, no setup is required-->
     </Expand>
   </Type>
   <Type Name="clang::InjectedClassNameType">
+    <DisplayString IncludeView="cpp">{InjectedType,view(cpp)}</DisplayString>
     <DisplayString>{*Decl,view(cpp)}</DisplayString>
     <Expand>
       <Item Name="Decl">Decl</Item>
@@ -582,16 +584,7 @@ For later versions of Visual Studio, no setup is required-->
   <Type Name="clang::FunctionDecl">
     <DisplayString>{*(clang::FunctionProtoType *)((clang::ExtQualsTypeCommonBase *)(((uintptr_t)DeclType.Value.Value) &amp; ~15))-&gt;BaseType,view(beforeName)} {Name,view(cpp)nd}{*(clang::FunctionProtoType *)((clang::ExtQualsTypeCommonBase *)(((uintptr_t)DeclType.Value.Value) &amp; ~15))-&gt;BaseType,view(afterName)}</DisplayString>
     <Expand>
-      <Item Name="ReturnType">*this,view(retType)nd</Item>
-      <Synthetic Name="Parameter Types">
-        <DisplayString>{*this,view(parm0)nd}</DisplayString>
-        <Expand>
-          <ArrayItems>
-            <Size>((clang::FunctionProtoType *)((clang::ExtQualsTypeCommonBase *)(((uintptr_t)DeclType.Value.Value) &amp; ~15))-&gt;BaseType)-&gt;FunctionTypeBits.NumParams</Size>
-            <ValuePointer>ParamInfo</ValuePointer>
-          </ArrayItems>
-        </Expand>
-      </Synthetic>
+      <ExpandedItem>*(clang::FunctionProtoType *)((clang::ExtQualsTypeCommonBase *)(((uintptr_t)DeclType.Value.Value) &amp; ~15))-&gt;BaseType</ExpandedItem>
     </Expand>
   </Type>
   <Type Name="clang::CXXDeductionGuideDecl">
